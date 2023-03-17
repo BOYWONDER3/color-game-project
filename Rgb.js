@@ -16,8 +16,25 @@ export default class Rgb {
         )
     }
 
-    generateSimiliar() {
+    generateSimiliar({ withinTolerance, outsideTolerance }) {
+        const withinToleranceIncrementor = Math.floor(withinTolerance * MAX_RGB_VALUE )
+        const outsideToleranceIncrementor = Math.ceil(outsideTolerance * MAX_RGB_VALUE )
 
+        const aboveRangeMin = this.r + outsideToleranceIncrementor
+        const aboveRangeMax = Math.min(this.r + withinToleranceIncrementor, MAX_RGB_VALUE)
+
+        const belowRangeMin = Math.max(this.r - withinToleranceIncrementor, 0)
+        const belowRangeMax = this.r - outsideToleranceIncrementor
+
+
+        const ranges = []
+        if(aboveRangeMax > aboveRangeMin) {
+            ranges.push({ min: aboveRangeMin, max: aboveRangeMax })
+        }
+        if(belowRangeMax > belowRangeMin) {
+            ranges.push({ min: aboveRangeMin, max: aboveRangeMax })
+        }
+        return ranges
     }
 }
 
