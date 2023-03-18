@@ -10,34 +10,56 @@ export default class Rgb {
 
     static generate() {
         return new Rgb(
-            randomNumber(MAX_RGB_VALUE),
-            randomNumber(MAX_RGB_VALUE),
-            randomNumber(MAX_RGB_VALUE)
+            randomNumber({ max: MAX_RGB_VALUE }),
+            randomNumber({ max: MAX_RGB_VALUE }),
+            randomNumber({ max: MAX_RGB_VALUE }),  
         )
     }
 
-    generateSimiliar({ withinTolerance, outsideTolerance }) {
-        const withinToleranceIncrementor = Math.floor(withinTolerance * MAX_RGB_VALUE )
-        const outsideToleranceIncrementor = Math.ceil(outsideTolerance * MAX_RGB_VALUE )
-
-        const aboveRangeMin = this.r + outsideToleranceIncrementor
-        const aboveRangeMax = Math.min(this.r + withinToleranceIncrementor, MAX_RGB_VALUE)
-
-        const belowRangeMin = Math.max(this.r - withinToleranceIncrementor, 0)
-        const belowRangeMax = this.r - outsideToleranceIncrementor
-
-
-        const ranges = []
-        if(aboveRangeMax > aboveRangeMin) {
-            ranges.push({ min: aboveRangeMin, max: aboveRangeMax })
-        }
-        if(belowRangeMax > belowRangeMin) {
-            ranges.push({ min: aboveRangeMin, max: aboveRangeMax })
-        }
-        return ranges
+    generateSimiliar( options ) {
+        return new Rgb (randomValueInRange({
+            startingValue: this.r, maxCutoff: MAX_RGB_VALUE, ...options, 
+        }),
+        randomValueInRange({
+            startingValue: this.g, maxCutoff: MAX_RGB_VALUE, ...options, 
+        }), 
+        randomValueInRange({
+            startingValue: this.b, maxCutoff: MAX_RGB_VALUE, ...options, 
+        }),)
     }
 }
 
-function randomNumber(max) {
-    return Math.floor(Math.random() * (max + 1))
+function randomNumber({ min = 0, max }) {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+function randomValueInRange(options) {
+    const ranges = validRanges( options )
+
+        const range = ranges[randomNumber({ max: ranges.length - 1 })]
+        return randomNumber(range)
+}
+
+function validRanges ({ 
+    startingValue, maxCutoff,
+    withinTolerance, outsideTolerance
+}) {
+    const withinToleranceIncrementor = Math.floor(withinTolerance * maxCutoff )
+    const outsideToleranceIncrementor = Math.ceil(outsideTolerance * maxCutoff )
+
+    const aboveRangeMin = startingValue + outsideToleranceIncrementor
+    const aboveRangeMax = Math.min(startingValue + withinToleranceIncrementor, maxCutoff)
+
+    const belowRangeMin = Math.max(startingValue - withinToleranceIncrementor, 0)
+    const belowRangeMax = startingValue - outsideToleranceIncrementor
+
+
+    const ranges = []
+    if(aboveRangeMax > aboveRangeMin) {
+        ranges.push({ min: aboveRangeMin, max: aboveRangeMax })
+    }
+    if(belowRangeMax > belowRangeMin) {
+        ranges.push({ min: aboveRangeMin, max: aboveRangeMax })
+    }
+    return ranges
 }
