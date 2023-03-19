@@ -27,6 +27,10 @@ export default class Rgb {
             startingValue: this.b, maxCutoff: MAX_RGB_VALUE, ...options, 
         }),)
     }
+
+    toCss() {
+        return `rgb(${this.r}, ${this.g}, ${this.b})`
+    }
 }
 
 function randomNumber({ min = 0, max }) {
