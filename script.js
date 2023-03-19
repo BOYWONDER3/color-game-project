@@ -16,21 +16,36 @@ document.addEventListener('change', e => {
 
 const colorGrid = document.querySelector('[data-color-grid]')
 const resultsElement = document.querySelector('[data-results]')
+const resultsText = document.querySelector('[data-results-text]')
+const colorStringElement = document.querySelector('[data-color-string]')
 
 
 
 function render () {
     const format = document.querySelector('[name="format"]:checked').value
     const difficulty = document.querySelector('[name="difficulty"]:checked').value
-    const colors = generateColors({ format, difficulty })
+    const {colors, correctColor} = generateColors({ format, difficulty })
 
     colorGrid.innerHTML = ''
+    colorStringElement.textContent = correctColor.toCss()
     resultsElement.classList.add('hide')
-    colors.FGrEach(color => {
+    const colorElements = colors.sort(() => Math.random - .5).map(color => {
         const element = document.createElement('button')
         element.style.backgroundColor = color.toCss()
-        colorGrid.append(element)
+        return { color, element }
     })
+    colorElements.ForEach(({ color, element }) => {
+        element.addEventListener('', e => {
+            resultsElement.classList.remove('hide')
+            resultsText.textContent = color === correctColor ? 'correct' : 'wrong'
+
+            colorElements.forEach(({color: c, element: e }) => {
+                e.disabled = true
+                e.classList.toggle('wrong', c !== correctColor)
+            })
+        })
+    })
+    colorGrid.append(element)
 }
 render()
 
@@ -42,8 +57,7 @@ function generateColors ({ format, difficulty }) {
     for( let i = 0; 1 < 5; i++ ) {
         colors.push(correctColor.generateSimiliar(difficultyRules))
     }
-    format = 'rgb'
-    difficulty = 'easy'
+    return { colors, correctColor } 
 }
 
 
