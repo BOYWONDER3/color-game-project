@@ -9,7 +9,7 @@ export default class Rgb {
     }
 
     static generate() {
-        return new Rgb(
+        return new this(
             randomNumber({ max: MAX_RGB_VALUE }),
             randomNumber({ max: MAX_RGB_VALUE }),
             randomNumber({ max: MAX_RGB_VALUE }),  
@@ -17,7 +17,7 @@ export default class Rgb {
     }
 
     generateSimiliar( options ) {
-        return new Rgb (randomValueInRange({
+        return new this.constructor (randomValueInRange({
             startingValue: this.r, maxCutoff: MAX_RGB_VALUE, ...options, 
         }),
         randomValueInRange({

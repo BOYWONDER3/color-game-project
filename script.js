@@ -1,15 +1,19 @@
 import Rgb from './Rgb.js'
+import Hex from './Hex.js'
 
 const COLOR_MAP = {
     rgb: Rgb, 
+    Hex: Hex,
 }
 
 const DIFFICULTY_MAP = {
     easy: { withinTolerance: 1, outsideTolerance: 0.2 },
     medium: { withinTolerance: 0.5, outsideTolerance: 0.2 },
-    large: { withinTolerance: 0.3, outsideTolerance: 0.2 },
+    hard: { withinTolerance: 0.3, outsideTolerance: 0.2 },
 }
 
+const nextButton = document.querySelector('[data-next-btn')
+nextButton.addEventListener('click', render)
 document.addEventListener('change', e => {
     if (e.target.matches('input[type="radio"]')) render()
 })
